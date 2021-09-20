@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder2", "NewFolder2", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.vcxproj", "{ECC39C4B-F77D-483B-B26E-6C1CFD822A80}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder3", "NewFolder3", "{0C9D4847-FC5F-4340-A956-5522A298B48A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2", "2", "{0C9D4847-FC5F-4340-A956-5522A298B48A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConsoleApplication2", "ConsoleApplication2\ConsoleApplication2.vcxproj", "{C91A2B40-7B8F-4B69-91C8-0E2FFD807EAE}"
 EndProject

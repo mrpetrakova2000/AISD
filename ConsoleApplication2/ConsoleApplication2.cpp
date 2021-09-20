@@ -1,20 +1,43 @@
-﻿// ConsoleApplication2.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+﻿#include <iostream>
+#include <stdlib.h>
+#include <time.h>
 
-#include <iostream>
+const char U[] = "0123456789ABCDEF";
+
+bool* GenerationSet() {
+    bool* A = new bool[16]{};
+    for (int i = 0; i < 16; i++) if (rand() % 2) A[i] = 1;
+    return A;
+}
 
 int main()
 {
-    std::cout << "Good bye!\n";
+    using namespace std;
+
+    clock_t start;
+    start = clock();
+    srand(time(nullptr));
+
+    bool** Sets = new bool* [4];
+    for (int i = 0; i < 4; i++) Sets[i] = GenerationSet();
+
+    for (int i = 0; i < 4; i++) {
+        cout << char('A' + i) << ": ";
+        for (int j = 0; j < 16; j++) if (Sets[i][j]) cout << U[j] << ' ';
+        cout << endl;
+    }
+
+    bool* E = new bool[16];
+    for (int i = 0; i < 16; i++) E[i] = Sets[0][i] && Sets[1][i] && Sets[2][i] && Sets[3][i];
+    cout << "E: ";
+    for (int i = 0; i < 16; i++) if (E[i]) cout << U[i] << ' ';
+    cout << endl;
+
+    for (int i = 0; i < 4; i++) delete[] Sets[i];
+    delete[] Sets;
+    delete[] E;
+
+    cout << "Duration: " << (clock() - start) / (double)CLOCKS_PER_SEC << endl;
+
+    return 0;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
