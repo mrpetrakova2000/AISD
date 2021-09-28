@@ -14,8 +14,6 @@ int main()
 {
     using namespace std;
 
-    clock_t start;
-    start = clock();
     srand(time(nullptr));
 
     bool** Sets = new bool* [4];
@@ -33,11 +31,16 @@ int main()
     for (int i = 0; i < 16; i++) if (E[i]) cout << U[i] << ' ';
     cout << endl;
 
+    clock_t start;
+    start = clock();
+    for (int t = 0; t < 1000000; t++) for (int i = 0; i < 16; i++) E[i] = Sets[0][i] && Sets[1][i] && Sets[2][i] && Sets[3][i];
+    start = clock() - start;
+    cout << "Duration: " << start / (double)CLOCKS_PER_SEC << endl;
+
+
     for (int i = 0; i < 4; i++) delete[] Sets[i];
     delete[] Sets;
     delete[] E;
-
-    cout << "Duration: " << (clock() - start) / (double)CLOCKS_PER_SEC << endl;
 
     return 0;
 }

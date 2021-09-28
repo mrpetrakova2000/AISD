@@ -6,8 +6,6 @@ int main()
 {
     using namespace std;
 
-    clock_t start;
-    start = clock();
     srand(time(nullptr));
 
     const char U[] = "0123456789ABCDEF";
@@ -28,7 +26,14 @@ int main()
     for (int i = 0; i < 16; i++) if ((R & (1 << i)) >> i) cout << U[i] << ' ';
     cout << endl;
 
-    cout << "Duration: " << (clock() - start) / (double)CLOCKS_PER_SEC << endl;
+    clock_t start;
+    start = clock();
+    for (int t = 0; t < 1000000; t++) {
+        R = Sets[0];
+        for (int i = 1; i < 4; i++) R &= Sets[i];
+    }
+    start = clock() - start;
+    cout << "Duration: " << start / (double)CLOCKS_PER_SEC << endl;
 
     return 0;
 }
