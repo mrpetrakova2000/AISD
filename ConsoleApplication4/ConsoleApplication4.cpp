@@ -8,6 +8,8 @@ struct EL
 	char d;
 	EL* next;
 	EL(char d, EL* next) : d(d), next(next) { }
+
+	~EL() { delete next; }
 };
 
 
@@ -84,6 +86,7 @@ int main()
 	clock_t start;
 	start = clock();
 	for (int t = 0; t < 1000000; t++) {
+		delete Le;
 		Le = nullptr;
 			for (EL* B = Lb; B; B = B->next)
 				for (EL* C = Lc; C; C = C->next)
@@ -108,5 +111,11 @@ int main()
 	start = clock() - start;
 	cout << "Duration: " << start / (double)CLOCKS_PER_SEC << endl;
 	
+	delete Le;
+	delete La;
+	delete Lb;
+	delete Lc;
+	delete Ld;
+
 	return 0;
 }
