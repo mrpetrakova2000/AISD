@@ -22,7 +22,7 @@ public:
 		GenerationSet(Arr, n);
 	}
 
-	Array() : N(16), n(0), S('E') {}; //simple constructor
+	Array() : N(16), n(0), S('E'), Arr(new char[N + 1]) {}; //simple constructor
 
 	Array& operator & (const Array& B) const { //logic AND
 		Array* E = new Array();
@@ -38,10 +38,11 @@ public:
 	Array& operator | (const Array& B) { //logic OR
 		Array* E = new Array();
 		int k = 0;
-		for (int i = 0; Arr[i]; ++i) k++;
+		//for (int i = 0; Arr[i]; ++i) k++;
 		for (int i = 0; B.Arr[i]; ++i)
 			if (!(this->exist(B.Arr[i]))) k++;
-		cout << k << endl;
+		k += n;
+		//cout << k << endl;
 		E->Arr = new char[k + 1];
 
 		for (int i = 0; Arr[i]; ++i)
@@ -66,7 +67,7 @@ public:
 		return *E;
 	}
 	void Show() { //print set
-		cout << S << " = ";
+		cout << S << "(" << n << ") = ";
 		if (n > 0)
 			for (int i = 0; i < n; i++) cout << Arr[i] << " ";
 		else cout << "empty";
@@ -82,7 +83,9 @@ public:
 		return *this;
 	}
 	~Array() { //destructor (doesn't work??)
-		delete Arr;
+		delete[] Arr;
+		//Arr = nullptr;
+		//free(Arr);
 	}
 
 	/*char GenerationSet() {
@@ -99,10 +102,10 @@ public:
 	void GenerationSet(char* Arr, int n) {
 		char U[] = "0123456789ABCDEF";
 		int i = 0;
-		Arr[i++] = U[rand() % (15 - 0)]; //initialize first element of array
+		Arr[i++] = U[rand() % 16]; //initialize first element of array
 		while (i < n) {
 			int flag = 0; //to find repeats
-			char a = U[rand() % (15 - 0)];
+			char a = U[rand() % 16];
 			for (int j = 0; flag == 0 && j <= i; ++j)
 				if (Arr[j] == a)  flag = 1;
 			if (flag == 0)
