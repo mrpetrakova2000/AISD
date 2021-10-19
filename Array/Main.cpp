@@ -6,21 +6,19 @@
 using namespace std;
 int main()
 {
+    //cout << "all ok\n";
     srand(time(nullptr));
     Array A('A'), B('B'), C('C'), D('D');
-    Array E, F, G;
+    Array E;
     A.Show();
     B.Show();
     C.Show();
     D.Show();
 
-    F = A & B;
-    G = F & C;
-    E = G & D;
+    E = A & B & C & D;
     cout << endl;
     cout << "A & B & C & D:\n";
     E.Show();
 
-    ~A; ~B; ~C; ~D; ~E;
     return 0;
 }
