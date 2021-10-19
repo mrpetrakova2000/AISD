@@ -17,5 +17,6 @@ int main()
     E = A & B & C & D;
     cout << endl;
     cout << "A & B & C & D:\n";
+    E.Show();
     return 0;
 }
