@@ -21,10 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{42d27913-5e5e-4954-a4c0-ec9018ecd5a5}</ProjectGuid>
-    <RootNamespace>Array</RootNamespace>
+    <ProjectGuid>{68691c88-00f9-497f-b644-b896045c53e5}</ProjectGuid>
+    <RootNamespace>ExperienceWithOverloadList</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>ConsoleAppication5</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -140,13 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Array.h" />
-    <ClInclude Include="Bit.h" />
-    <ClInclude Include="ExperienceWithOverloadList.h" />
-    <ClInclude Include="List.h" />
+    <ClCompile Include="ExperienceWithOverloadList.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

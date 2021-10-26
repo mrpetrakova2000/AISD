@@ -1,7 +1,8 @@
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
-#include "Bit.h"
+///#include "Bit.h"
+#include "ExperienceWithOverloadList.h"
 //#include "List.h"
 
 using namespace std;
@@ -15,12 +16,12 @@ int main()
     C.Show();
     D.Show();
 
-    /*
+    
     clock_t t = clock();
     for (int i = 0; i < 1000000; i++) Set R = A & B & C & D;
     t = clock() - t;
     cout << "Time: " << t / (double)CLOCKS_PER_SEC << endl;
-    */
+    
 
     E = A & B & C & D;
     cout << endl;
