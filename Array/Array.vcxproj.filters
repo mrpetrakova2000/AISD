@@ -32,5 +32,8 @@
     <ClInclude Include="ExperienceWithOverloadList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Machine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

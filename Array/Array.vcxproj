@@ -147,6 +147,7 @@
     <ClInclude Include="Bit.h" />
     <ClInclude Include="ExperienceWithOverloadList.h" />
     <ClInclude Include="List.h" />
+    <ClInclude Include="Machine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
