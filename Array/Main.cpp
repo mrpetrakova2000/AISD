@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
-#include "Array.h"
+#include "Bit.h"
 //#include "List.h"
 
 using namespace std;
