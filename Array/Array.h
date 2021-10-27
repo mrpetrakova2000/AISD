@@ -6,95 +6,93 @@ using namespace std;
 
 class Set {
 private:
-	const int N; //universe size
-	int n; //set size
-	char S, * Arr; //name, Set
-	bool exist(char s) const { //check, is this element in set
+	const int N; 
+	int n; 
+	char S, * Arr; 
+	bool exist(char s) const {
 		bool b = false;
 		for (int i = 0; Arr[i] && !b; ++i)
 			if (Arr[i] == s) b = true;
 		return b;
 	}
 public:
-	Set(char s) : N(16), n(n), S(s) { //constructor
-		n = rand() % (N + 1);
+	Set(char s) : N(16), n(0), S(s), Arr(nullptr) {
+		GenerationSet();
+		//GenerationSetN(10);
+	}
+
+	Set() : N(16), n(0), S('E'), Arr(nullptr) {};
+
+	Set(const Set& B) : N(16), n(B.n), S('E') {
 		Arr = new char[n + 1];
-		GenerationSet(n);
+		for (int i = 0; B.Arr[i]; ++i) Arr[i] = B.Arr[i];
+		Arr[n] = '\0';
 	}
 
-	Set() : N(16), n(0), S('E') {}; //simple constructor
+	~Set() { delete[] Arr; }
+	
+	Set& operator = (const Set& A) { 
+		n = A.n;
+		delete Arr; Arr = nullptr;
+		Arr = new char[n + 1];
+		for (int i = 0; i < n; ++i) Arr[i] = A.Arr[i]; Arr[n] = '\0';
+		return *this;
+	}
 
-	Set& operator & (const Set& B) const { //logic AND
-		Set* E = new Set();
+	Set operator & (const Set& B) const { 
+		Set E;
 		int c = 0;
-		for (int i = 0; Arr[i]; ++i)
+		//контрольный вывод промежуточных результатов
+		/*cout << endl;
+		for (int i = 0; i < n; ++i) cout << Arr[i] << " ";
+		cout << endl;
+		for (int i = 0; i < B.n; ++i) cout << B.Arr[i] << " ";
+		cout << endl;*/
+
+		for (int i = 0; i < n; ++i)
 			if (B.exist(Arr[i])) c++;
-		E->Arr = new char[c + 1];
-		for (int i = 0; Arr[i]; ++i)
-			if (B.exist(Arr[i])) E->Arr[E->n++] = Arr[i];
-		E->Arr[E->n] = '\0';
-		return *E;
+		E.Arr = new char[c + 1];
+		for (int i = 0; i < n; ++i)
+			if (B.exist(Arr[i])) 
+				E.Arr[E.n++] = Arr[i];
+		E.Arr[E.n] = '\0';
+		return E;
 	}
 
-	Set& operator | (const Set& B) { //logic OR
-		Set* E = new Set();
-		int k = 0;
-		for (int i = 0; B.Arr[i]; ++i)
-			if (!(this->exist(B.Arr[i]))) k++;
-		k += n;
-		E->Arr = new char[k + 1];
-
-		for (int i = 0; Arr[i]; ++i)
-			E->Arr[E->n++] = Arr[i];
-
-		for (int i = 0; B.Arr[i]; ++i)
-			if (!(this->exist(B.Arr[i])))
-				E->Arr[E->n++] = B.Arr[i];
-
-		return *E;
-	}
-
-	Set& operator ~ () const { //logic NOT
-		char U[] = "0123456789ABCDEF";
-		Set* E = new Set();
-		E->Arr = new char[N - n + 1];
-		for (int i = 0; U[i]; ++i)
-			if (!(this->exist(U[i]))) E->Arr[E->n++] = U[i];
-		E->Arr[E->n] = 0;
-		return *E;
-	}
-	void Show() { //print set
-		cout << S << " = ";
+	void Show() {
+		cout << S << "(" << n << ") = ";
 		if (n > 0)
 			for (int i = 0; i < n; i++) cout << Arr[i] << " ";
 		else cout << "empty";
 		cout << endl;
 	}
-	int power() const { return n; } //to see private size of set
 
-	Set& operator = (const Set& A) { //assignment
-		n = A.n;
-		Arr = new char[n + 1];
-		for (int i = 0; i < A.n; ++i) Arr[i] = A.Arr[i];
-		Arr[n] = '\0';
-		return *this;
-	}
-	~Set() { //destructor 
-		delete[] Arr;
-	}
-
-	void GenerationSet(int n) {
+	void GenerationSet() {
 		char U[] = "0123456789ABCDEF";
-		int i = 0;
-		Arr[i++] = U[rand() % N]; //initialize first element of Set
-		while (i < n) {
-			int flag = 0; //to find repeats
-			char a = U[rand() % N];
-			for (int j = 0; flag == 0 && j <= i; ++j)
-				if (Arr[j] == a)  flag = 1;
-			if (flag == 0)
-				Arr[i++] = a;
+		long w = 0;
+		w = rand() % 65536;
+		
+		for (int i = 0; i < N; ++i)
+			if ((w >> i) & 1) n++;
+		Arr = new char[n + 1];
+
+		for (int i = 0, k = 0; i < N; ++i)
+			if ((w >> i) & 1) Arr[k++] = U[i];
+		Arr[n] = '\0';
+	}
+
+	void GenerationSetN(int k) {
+		char X[] = "0123456789ABCDEF";
+		for (int i = 0; i < k; ++i) {
+			int p = rand() % (N - i);
+			if (p) swap(X[i], X[i + p]);
 		}
-		Arr[n] = 0;
+		X[k] = '\0';
+		Arr = new char[k + 1];
+		for (int i = 0; i < k; ++i) {
+			Arr[i] = X[i];
+			n++;
+		}
+		Arr[n] = '\0';
 	}
 };
