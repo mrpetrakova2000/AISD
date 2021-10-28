@@ -49,6 +49,6 @@ public:
 	}
 
 	void GenerationSet() {
-		Arr = rand() % 65535;
+		Arr = rand() % 65536;
 	}
 };
