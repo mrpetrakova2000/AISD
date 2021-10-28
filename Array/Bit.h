@@ -12,12 +12,9 @@ private:
 public:
 	Set(char s) : N(16), n(0), S(s) { //constructor
 		GenerationSet();
-
 	}
 
-	Set() : N(16), n(0), S('E') {
-		FillFalseValue();
-	}; //simple constructor
+	Set() : N(16), n(0), S('E') {}; //simple constructor
 
 	Set operator & (const Set& B) const { //logic AND
 		Set E;
@@ -32,40 +29,6 @@ public:
 		return E;
 	}
 
-	void FillFalseValue()
-	{
-		for (int i = 0; i < N; i++)
-		{
-			Arr[i] = false;
-		}
-	}
-
-	Set operator | (const Set& B) const { //logic OR
-		Set E;
-		for (int i = 0; i < N; i++)
-		{
-			if (Arr[i] || B.Arr[i])
-			{
-				E.Arr[i] = true;
-				E.n++;
-			}
-		}
-		return E;
-	}
-
-
-	Set& operator ~ () const { //logic NOT
-		Set* E = new Set();
-		for (int i = 0; i < N; i++)
-		{
-			if (Arr[i] == false)
-			{
-				E->Arr[i] = true;
-				E->n++;
-			}
-		}
-		return *E;
-	}
 	void Show() { //print set
 		const char U[] = "0123456789ABCDEF";
 		cout << S << "(" << n << ") = ";
@@ -90,10 +53,11 @@ public:
 
 	void GenerationSet() {
 		for (int i = 0; i < N; i++)
-			if (rand() % 2) {
-				Arr[i] = 1;
+		{
+			Arr[i] = (rand() & 1);
+			if (Arr[i]) {
 				n++;
 			}
-			else Arr[i] = 0;
+		}
 	}
 };

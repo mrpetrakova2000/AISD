@@ -12,7 +12,6 @@ private:
 public:
 	Set(char s) : N(16), n(0), S(s) { //constructor
 		GenerationSet();
-
 	}
 
 	Set() : N(16), n(0), S('E') {}; //simple constructor
@@ -22,24 +21,6 @@ public:
 		E.Arr = Arr & B.Arr;
 		return E;
 	}
-
-	Set operator | (const Set& B) const { //logic OR
-		Set E;
-		E.Arr = Arr | B.Arr;
-		return E;
-	}
-
-
-	/*Set& operator ~ () const { //logic NOT
-		Set* E = new Set();
-		for (int i = 0; i < N; i++) { //n - search
-			if ((Arr & (1 << i)) >> i == 0) {
-				E->Arr = true
-				E->n++;
-			}
-		}
-		return* E;
-	}*/
 
 	void Show() { //print set
 		const char U[] = "0123456789ABCDEF";
@@ -68,6 +49,6 @@ public:
 	}
 
 	void GenerationSet() {
-		for (int i = 0; i < 4; i++) Arr = rand() % 65535;
+		Arr = rand() % 65535;
 	}
 };
