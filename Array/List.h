@@ -51,13 +51,13 @@ public:
 };
 
 void Set::GenerationSet() {
-	n = rand() % (N + 1);
 	char U[] = "0123456789ABCDEF";
-	for (int i = 0; i < n; i++) {
-		int m = rand() % (N - i);
-		A = new El(U[i + m], A);
-		U[i + m] = U[i];
-	}
+	long w = rand() % 65536;
+	for (int i = 0; i < N; ++i)
+		if ((w >> i) & 1) {
+			A = new El(U[i], A);
+			n++;
+		}
 }
 
 void Set::Show() {
