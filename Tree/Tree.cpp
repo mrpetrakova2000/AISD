@@ -40,10 +40,9 @@ Vertex* Tree::Generation(Vertex* V) {
         Vertex* U = new Vertex(tmpDepth, V);
         for (int i = 0; i < 3; i++) {
             Vertex* W = Generation(U);
-            if (W) U->adjVertex.push_back(W);
+            U->adjVertex.push_back(W);
         }
         U->sym = 'a' + n++;
-        if (V) U->adjVertex.push_back(V);
         return U;
     }
     return nullptr;
@@ -59,13 +58,9 @@ void Tree::Bfs() {
         q.pop();
         std::cout << " " << V->sym;
         if (V->parent) std::cout << "(" << V->parent->sym << ")";
-        for (auto U = V->adjVertex.begin(); U != V->adjVertex.end(); U++) {
-            if (*U != V->parent) {
-                q.push(*U);
-            }
-        }
+        for (auto U = V->adjVertex.begin(); U != V->adjVertex.end(); U++)
+            if (*U) q.push(*U);
     }
-
     std::cout << std::endl;
 }
 
@@ -81,12 +76,10 @@ void Tree::BfsSearchParents() {
         if (V->adjVertex.size() > 1)
             p.push_back(V);
 
-        for (auto U = V->adjVertex.begin(); U != V->adjVertex.end(); U++) {
-            if (*U != V->parent) {
-                q.push(*U);
-            }
-        }
+        for (auto U = V->adjVertex.begin(); U != V->adjVertex.end(); U++)
+            if (*U) q.push(*U);
     }
+
     //std::cout << "The number of vertices with at least one descendant - ";
     std::cout << "The number of parents - " << p.size() << ": ";
     for (auto& i : p) std::cout << i->sym << " ";
@@ -94,9 +87,6 @@ void Tree::BfsSearchParents() {
 }
 
 void Tree::Input(Vertex* V) {
-    if (V->depth > maxDepth) maxDepth = V->depth;
-    if (V->parent) V->adjVertex.push_back(V->parent);
-
     bool b;
 
     std::cout << "Temporary depth is " << V->depth << std::endl;
@@ -126,6 +116,7 @@ void Tree::Input(Vertex* V) {
         V->adjVertex.push_back(U);
     }
 
+    if (V->depth > maxDepth) maxDepth = V->depth;
     V->sym = 'a' + n++;
 }
 
@@ -146,11 +137,8 @@ void Tree::Output() {
         }
         std::cout << V->sym;
         if (V->parent) std::cout << "(" << V->parent->sym << ") ";
-        for (auto U = V->adjVertex.begin(); U != V->adjVertex.end(); U++) {
-            if (*U != V->parent) {
-                q.push(*U);
-            }
-        }
+        for (auto U = V->adjVertex.begin(); U != V->adjVertex.end(); U++) 
+            if (*U) q.push(*U);
     }
 
     std::cout << std::endl;
@@ -161,7 +149,7 @@ int main()
 {
     //srand(time(0));
 
-    Tree T(4); // initialization with arg - generation tree. Arg is max depth of tree
+    Tree T(2); // initialization with arg - generation tree. Arg is max depth of tree
     // Tree T1; // initialization without arg - input
     T.Output(); // parent in brakets
     //T.Bfs();
