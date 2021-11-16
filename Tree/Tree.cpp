@@ -3,6 +3,7 @@
 #include <time.h>
 #include <vector>
 #include <queue>
+#include <stack>
 
 class Vertex {
 private:
@@ -26,16 +27,17 @@ public:
 
     Vertex* Generation(Vertex* V = nullptr);
 
-    void Bfs();
-    void BfsSearchParents();
     void Input(Vertex* V);
     void Output();
+    void search();
+    int DFS(Vertex* V);
 };
 
 Vertex* Tree::Generation(Vertex* V) {
     int tmpDepth = (V) ? V->depth + 1 : 0;
-    bool b = (tmpDepth < rand() % (maxDepth + 1));
-
+    bool b = (tmpDepth < rand() % (maxDepth + 1)); //tree with random (lower than fixed) depth
+    //bool b = tmpDepth < maxDepth; //tree with fixed depth
+    
     if (b) {
         Vertex* U = new Vertex(tmpDepth, V);
         for (int i = 0; i < 3; i++) {
@@ -46,44 +48,6 @@ Vertex* Tree::Generation(Vertex* V) {
         return U;
     }
     return nullptr;
-}
-
-void Tree::Bfs() {
-    std::cout << "Bfs:";
-
-    std::queue<Vertex*> q;
-    if (root) q.push(root);
-    while (!q.empty()) {
-        Vertex* V = q.front();
-        q.pop();
-        std::cout << " " << V->sym;
-        if (V->parent) std::cout << "(" << V->parent->sym << ")";
-        for (auto U = V->adjVertex.begin(); U != V->adjVertex.end(); U++)
-            if (*U) q.push(*U);
-    }
-    std::cout << std::endl;
-}
-
-void Tree::BfsSearchParents() {
-    std::vector<Vertex*> p;
-
-    std::queue<Vertex*> q;
-    if (root) q.push(root);
-    while (!q.empty()) {
-        Vertex* V = q.front();
-        q.pop();
-
-        if (V->adjVertex.size() > 1)
-            p.push_back(V);
-
-        for (auto U = V->adjVertex.begin(); U != V->adjVertex.end(); U++)
-            if (*U) q.push(*U);
-    }
-
-    //std::cout << "The number of vertices with at least one descendant - ";
-    std::cout << "The number of parents - " << p.size() << ": ";
-    for (auto& i : p) std::cout << i->sym << " ";
-    std::cout << std::endl;
 }
 
 void Tree::Input(Vertex* V) {
@@ -144,16 +108,30 @@ void Tree::Output() {
     std::cout << std::endl;
 }
 
+int parentCnt = 0;
+int Tree::DFS(Vertex* V) {
+    if (V) {
+        DFS(V->adjVertex.at(0));
+        std::cout << V->sym << "_";
+        DFS(V->adjVertex.at(1));
+        DFS(V->adjVertex.at(2));
+        if (V->adjVertex.at(0) or V->adjVertex.at(1) or V->adjVertex.at(2)) parentCnt++;
+    }
+    return parentCnt;
+}
+
+void Tree::search() {
+    std::cout << "\nIn-order traversal: ";
+    std::cout << "\nNumber of parents: " << DFS(root) << std::endl;
+}
 
 int main()
 {
-    //srand(time(0));
+    srand(time(0));
 
-    Tree T(2); // initialization with arg - generation tree. Arg is max depth of tree
-    // Tree T1; // initialization without arg - input
+    Tree T(3); // initialization with arg - generation tree. Arg is max depth of tree
     T.Output(); // parent in brakets
-    //T.Bfs();
-    //T.BfsSearchParents();
+    T.search();
 
     return 0;
 }
