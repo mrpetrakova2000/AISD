@@ -21,9 +21,15 @@ private:
     int n;
     int maxDepth;
     Vertex* root;
+    char** SCREEN;
+    int offset = 40;
+    int parentCnt = 0;
 public:
     Tree() : n(0), maxDepth(0), root(new Vertex()) { Input(root); std::cout << std::endl; };
-    Tree(int a) : n(0), maxDepth(a) { root = Generation(); };
+    Tree(int a) : n(0), maxDepth(a), SCREEN(new char* [a]) {
+        root = Generation(); 
+        for (int i = 0; i < a; ++i) SCREEN[i] = new char[80];
+    };
 
     Vertex* Generation(Vertex* V = nullptr);
 
@@ -31,6 +37,8 @@ public:
     void Output();
     void search();
     int DFS(Vertex* V);
+    void newOutput();
+    void OutNode(Vertex* V, int row, int col);
 };
 
 Vertex* Tree::Generation(Vertex* V) {
@@ -108,7 +116,6 @@ void Tree::Output() {
     std::cout << std::endl;
 }
 
-int parentCnt = 0;
 int Tree::DFS(Vertex* V) {
     if (V) {
         DFS(V->adjVertex.at(0));
@@ -125,12 +132,40 @@ void Tree::search() {
     std::cout << "\nNumber of parents: " << DFS(root) << std::endl;
 }
 
+void Tree::OutNode(Vertex* V, int row, int col) {
+    if (V) {
+        if (col < 80 && col > 0) SCREEN[row - 1][col - 1] = V->sym;
+        if (row < maxDepth) {
+            if (V->adjVertex.at(0)) OutNode(V->adjVertex.at(0), row + 1, col - (offset >> row) + row + 1);
+            if (V->adjVertex.at(1)) OutNode(V->adjVertex.at(1), row + 1, col);
+            if (V->adjVertex.at(2)) OutNode(V->adjVertex.at(2), row + 1, col + (offset >> row) - row - 1);
+        }
+    }
+}
+
+void Tree::newOutput() {
+    if (root) {
+        for (int i = 0; i < maxDepth; ++i) {
+            memset(SCREEN[i], '.', 80);
+            SCREEN[i][79] = 0;
+        }
+
+        OutNode(root, 1, offset);
+        for (int i = 0; i < maxDepth; ++i) {
+            std::cout << SCREEN[i] << std::endl;
+        }
+    }
+    else std::cout << "Tree is empty!" << std::endl;
+}
+
 int main()
 {
     srand(time(0));
 
     Tree T(3); // initialization with arg - generation tree. Arg is max depth of tree
-    T.Output(); // parent in brakets
+    //T.Output(); // parent in brakets
+    
+    T.newOutput();
     T.search();
 
     return 0;
