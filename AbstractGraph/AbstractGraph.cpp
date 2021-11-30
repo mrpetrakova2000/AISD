@@ -119,11 +119,16 @@ int main() {
     
     std::cin >> s >> f;
 
-    std::cout << "Distance: ";
+    std::cout << std::endl << "All distances: " << std::endl;
     std::vector<int> A = Dijkstra(G1, s - 1);
-    for (auto& i : A)
-        std::cout << i << " ";
-    std::cout << std::endl;
+    int x = s;
+    for (auto& i : A) {
+        std::cout << s << " -> " << x << " = " << i << " ";
+        std::cout << std::endl;
+        x++;
+    }
+    std::cout << std::endl << "Main distance: " << s << " -> " << f << " = " << A[f - 1] << std::endl;
+
 
     std::cout << "Path: ";
     std::list<int> B = Path(G1, A, s - 1, f - 1);
@@ -133,40 +138,33 @@ int main() {
     return 0;
 }
 
-std::vector<int> Dijkstra(AbstractGraph G, int s) {
-    std::vector<int> D(G.n);
-    for (int v = 0; v < G.n; v++) {
-        if (G.MatrixAdj[s][v])
-            D[v] = G.MatrixAdj[s][v];
-        else
-            D[v] = 100000;
-    }
-    D[s] = 0;
+std::vector<int>Dijkstra(AbstractGraph G, int s) {
 
+    std::vector<int> distance(G.n);
+    int count, index, i, u, m = s + 1;
     std::vector<bool> visited(G.n);
-    visited[s] = 1;
-
-    for (int i = 0; i < G.n; i++) {
-        int v = s, minWeight = 1000000;
-
-        for (int j = 0; j < G.n; j++)
-            if (not visited[j] and D[j] < minWeight) {
-                v = j;
-                minWeight = D[j];
-            }
-        visited[v] = 1;
-
-        for (int u = 0; u < G.n; u++) {
-            if (not visited[u] and G.MatrixAdj[v][u]) {
-                if (D[v] + G.MatrixAdj[v][u] < D[u])
-                    D[u] = D[v] + G.MatrixAdj[v][u];
-            }
-        }
+    for (i = 0; i < G.n; i++)
+    {
+        distance[i] = INT_MAX; visited[i] = false;
     }
-
-    return D;
+    distance[s] = 0;
+    for (count = 0; count < G.n - 1; count++)
+    {
+        int min = INT_MAX;
+        for (i = 0; i < G.n; i++)
+            if (!visited[i] && distance[i] <= min)
+            {
+                min = distance[i]; index = i;
+            }
+        u = index;
+        visited[u] = true;
+        for (i = 0; i < G.n; i++)
+            if (!visited[i] && G.MatrixAdj[u][i] && distance[u] != INT_MAX &&
+                distance[u] + G.MatrixAdj[u][i] < distance[i])
+                distance[i] = distance[u] + G.MatrixAdj[u][i];
+    }
+    return distance;
 }
-
 std::list<int> Path(AbstractGraph G, std::vector<int> A, int s, int f) {
     std::list<int> B;
 
