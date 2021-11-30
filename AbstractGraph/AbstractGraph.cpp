@@ -16,7 +16,7 @@ public:
         Input();
     }
 
-    AbstractGraph(int n): n(n), m(rand()%(n*(n-1)/2)) {
+    AbstractGraph(int n) : n(n), m(rand() % (n* (n - 1) / 2)) {
         MatrixAdj.resize(n);
         for (int i = 0; i < n; i++) MatrixAdj[i].resize(n, inf);
 
@@ -36,7 +36,10 @@ public:
             F >> n >> m;
 
             MatrixAdj.resize(n);
-            for (int i = 0; i < n; i++) MatrixAdj[i].resize(n);
+            for (int i = 0; i < n; i++) {
+                MatrixAdj[i].resize(n, inf);
+                MatrixAdj[i][i] = 0;
+            }
 
             for (int i = 0; i < m; i++) {
                 int v, u, s;
@@ -50,7 +53,10 @@ public:
             std::cin >> n >> m;
 
             MatrixAdj.resize(n);
-            for (int i = 0; i < n; i++) MatrixAdj[i].resize(n);
+            for (int i = 0; i < n; i++) {
+                MatrixAdj[i].resize(n, inf);
+                MatrixAdj[i][i] = 0;
+            }
 
             std::cout << "Enter numbers of start and final vertices of edges and lengths of the edges:\n";
             for (int i = 0; i < m; i++) {
@@ -65,11 +71,11 @@ public:
     void Generation(int n, int m) {
         for (int i = 0; i < n; ++i) {
             for (int j = i + 1; j < n; ++j) {
-                if (rand() % 2){
+                if (rand() % 2) {
                     int a = rand() % 100;
                     MatrixAdj[i][j] = a;
                     MatrixAdj[j][i] = a;
-                } 
+                }
             }
             MatrixAdj[i][i] = 0;
         }
@@ -83,7 +89,7 @@ public:
         }
         std::cout << std::endl;
 
-        for (int i = 0; i < 4*n + 3; ++i) std::cout << "-";
+        for (int i = 0; i < 4 * n + 3; ++i) std::cout << "-";
         std::cout << std::endl;
 
         for (int i = 0; i < n; ++i) {
@@ -103,41 +109,92 @@ public:
     }
 
     friend std::vector<int> Dijkstra(AbstractGraph G, int s);
+    friend std::vector<int> BellmanFord(AbstractGraph G, int s);
+    friend std::vector<int> FloydWarshall(AbstractGraph G, int s);
     friend std::list<int> Path(AbstractGraph G, std::vector<int> A, int s, int f);
 };
 
 int main() {
-    srand(time(0));
     //AbstractGraph G;
-    AbstractGraph G1(7);
+    AbstractGraph G(50);
 
     //G.Output();
-    G1.Output();
+    G.Output();
 
     int s, f;
     std::cout << "\nEnter numbers of start and final vertices: ";
-    
+
     std::cin >> s >> f;
 
-    std::cout << std::endl << "All distances: " << std::endl;
-    std::vector<int> A = Dijkstra(G1, s - 1);
-    int x = s;
-    for (auto& i : A) {
-        std::cout << s << " -> " << x << " = " << i << " ";
-        std::cout << std::endl;
-        x++;
+    std::cout << "\nDijkstra algorithm" << std::endl;
+    std::cout << "Distance:" << std::endl;
+    std::vector<int> A = Dijkstra(G, s - 1);
+    for (int i = 0; i < A.capacity(); i++) {
+        std::cout.width(3);
+        std::cout << i + 1 << "|";
     }
-    std::cout << std::endl << "Main distance: " << s << " -> " << f << " = " << A[f - 1] << std::endl;
-
-
+    std::cout << std::endl;
+    for (int i = 0; i < 4 * A.capacity(); ++i) std::cout << "-";
+    std::cout << std::endl;
+    for (auto& i : A) {
+        std::cout.width(3);
+        std::cout << i << "|";
+    }
+    std::cout << std::endl;
+    std::cout << "Shortest distance from start to final: " << A[f - 1] << std::endl;
     std::cout << "Path: ";
-    std::list<int> B = Path(G1, A, s - 1, f - 1);
+    std::list<int> B = Path(G, A, s - 1, f - 1);
     for (auto& i : B)
+        std::cout << i << " ";
+    std::cout << std::endl << std::endl;
+
+    std::cout << "Bellman-Ford algorithm" << std::endl;
+    std::cout << "Distance:" << std::endl;
+    std::vector<int> C = BellmanFord(G, s - 1);
+    for (int i = 0; i < C.capacity(); i++) {
+        std::cout.width(3);
+        std::cout << i + 1 << "|";
+    }
+    std::cout << std::endl;
+    for (int i = 0; i < 4 * C.capacity(); ++i) std::cout << "-";
+    std::cout << std::endl;
+    for (auto& i : C) {
+        std::cout.width(3);
+        std::cout << i << "|";
+    }
+    std::cout << std::endl;
+    std::cout << "Shortest distance from start to final: " << C[f - 1] << std::endl;
+    std::cout << "Path: ";
+    std::list<int> D = Path(G, C, s - 1, f - 1);
+    for (auto& i : D)
+        std::cout << i << " ";
+    std::cout << std::endl << std::endl;
+
+    std::cout << "Floyd-Warshall algorithm" << std::endl;
+    std::cout << "Distance:" << std::endl;
+    std::vector<int> E = FloydWarshall(G, s - 1);
+    for (int i = 0; i < E.capacity(); i++) {
+        std::cout.width(3);
+        std::cout << i + 1 << "|";
+    }
+    std::cout << std::endl;
+    for (int i = 0; i < 4 * E.capacity() + 3; ++i) std::cout << "-";
+    std::cout << std::endl;
+    for (auto& i : E) {
+        std::cout.width(3);
+        std::cout << i << "|";
+    }
+    std::cout << std::endl;
+    std::cout << "Shortest distance from start to final: " << E[f - 1] << std::endl;
+    std::cout << "Path: ";
+    std::list<int> F = Path(G, E, s - 1, f - 1);
+    for (auto& i : F)
         std::cout << i << " ";
 
     return 0;
 }
 
+/*
 std::vector<int>Dijkstra(AbstractGraph G, int s) {
 
     std::vector<int> distance(G.n);
@@ -165,20 +222,74 @@ std::vector<int>Dijkstra(AbstractGraph G, int s) {
     }
     return distance;
 }
+*/
+
+std::vector<int> Dijkstra(AbstractGraph G, int s) {
+    std::vector<int> D(G.MatrixAdj[s]);
+
+    std::vector<bool> visited(G.n);
+    visited[s] = 1;
+
+    for (int i = 0; i < G.n - 1; i++) {
+        int v = -1, minWeight = inf;
+
+        for (int j = 0; j < G.n; j++)
+            if (not visited[j] and D[j] < minWeight) {
+                v = j;
+                minWeight = D[j];
+            }
+        visited[v] = 1;
+
+        for (int u = 0; u < G.n; u++) {
+            if (not visited[u]) {
+                if (D[v] + G.MatrixAdj[v][u] < D[u])
+                    D[u] = D[v] + G.MatrixAdj[v][u];
+            }
+        }
+    }
+
+    return D;
+}
+
+std::vector<int> BellmanFord(AbstractGraph G, int s) {
+    std::vector<int> D(G.MatrixAdj[s]);
+
+    for (int k = 0; k < G.n; k++)
+        for (int v = 0; v < G.n; v++)
+            if (v != s) {
+                for (int u = 0; u < G.n; u++)
+                    D[v] = std::min(D[v], D[u] + G.MatrixAdj[u][v]);
+            }
+
+    return D;
+}
+
+std::vector<int> FloydWarshall(AbstractGraph G, int s) {
+    std::vector<std::vector<int>> D(G.MatrixAdj);
+
+    for (int k = 0; k < G.n; k++)
+        for (int v = 0; v < G.n; v++)
+            for (int u = 0; u < G.n; u++)
+                D[v][u] = std::min(D[v][u], D[v][k] + D[k][u]);
+
+    return D[s];
+}
+
 std::list<int> Path(AbstractGraph G, std::vector<int> A, int s, int f) {
     std::list<int> B;
 
+    std::vector<bool> visited(G.n);
     int v = f;
     B.push_front(v + 1);
 
     while (v != s) {
         for (int u = 0; u < G.n; u++) {
-            if (G.MatrixAdj[v][u])
-                if (A[u] == A[v] - G.MatrixAdj[v][u]) {
-                    v = u;
-                    B.push_front(v + 1);
-                    break;
-                }
+            if (not visited[u] and A[u] == A[v] - G.MatrixAdj[v][u]) {
+                visited[u] = 1;
+                v = u;
+                B.push_front(v + 1);
+                break;
+            }
         }
     }
 
