@@ -114,21 +114,8 @@ public:
     friend std::list<int> Path(AbstractGraph G, std::vector<int> A, int s, int f);
 };
 
-int main() {
-    //AbstractGraph G;
-    AbstractGraph G(50);
-
-    //G.Output();
-    G.Output();
-
-    int s, f;
-    std::cout << "\nEnter numbers of start and final vertices: ";
-
-    std::cin >> s >> f;
-
-    std::cout << "\nDijkstra algorithm" << std::endl;
+void Output(std::vector<int> A, std::list<int> B, int s, int f) {
     std::cout << "Distance:" << std::endl;
-    std::vector<int> A = Dijkstra(G, s - 1);
     for (int i = 0; i < A.capacity(); i++) {
         std::cout.width(3);
         std::cout << i + 1 << "|";
@@ -140,56 +127,42 @@ int main() {
         std::cout.width(3);
         std::cout << i << "|";
     }
+
     std::cout << std::endl;
     std::cout << "Shortest distance from start to final: " << A[f - 1] << std::endl;
     std::cout << "Path: ";
-    std::list<int> B = Path(G, A, s - 1, f - 1);
+
     for (auto& i : B)
         std::cout << i << " ";
     std::cout << std::endl << std::endl;
+}
+
+int main() {
+    AbstractGraph G;
+    //AbstractGraph G(50);
+
+    //G.Output();
+    G.Output();
+
+    int s, f;
+    std::cout << "\nEnter numbers of start and final vertices: ";
+    std::cin >> s >> f;
+
+    std::cout << "\nDijkstra algorithm" << std::endl;
+    std::vector<int> A = Dijkstra(G, s - 1);
+    std::list<int> B = Path(G, A, s - 1, f - 1);
+    Output(A, B, s, f);
+    
 
     std::cout << "Bellman-Ford algorithm" << std::endl;
-    std::cout << "Distance:" << std::endl;
     std::vector<int> C = BellmanFord(G, s - 1);
-    for (int i = 0; i < C.capacity(); i++) {
-        std::cout.width(3);
-        std::cout << i + 1 << "|";
-    }
-    std::cout << std::endl;
-    for (int i = 0; i < 4 * C.capacity(); ++i) std::cout << "-";
-    std::cout << std::endl;
-    for (auto& i : C) {
-        std::cout.width(3);
-        std::cout << i << "|";
-    }
-    std::cout << std::endl;
-    std::cout << "Shortest distance from start to final: " << C[f - 1] << std::endl;
-    std::cout << "Path: ";
     std::list<int> D = Path(G, C, s - 1, f - 1);
-    for (auto& i : D)
-        std::cout << i << " ";
-    std::cout << std::endl << std::endl;
+    Output(C, D, s, f);
 
     std::cout << "Floyd-Warshall algorithm" << std::endl;
-    std::cout << "Distance:" << std::endl;
     std::vector<int> E = FloydWarshall(G, s - 1);
-    for (int i = 0; i < E.capacity(); i++) {
-        std::cout.width(3);
-        std::cout << i + 1 << "|";
-    }
-    std::cout << std::endl;
-    for (int i = 0; i < 4 * E.capacity() + 3; ++i) std::cout << "-";
-    std::cout << std::endl;
-    for (auto& i : E) {
-        std::cout.width(3);
-        std::cout << i << "|";
-    }
-    std::cout << std::endl;
-    std::cout << "Shortest distance from start to final: " << E[f - 1] << std::endl;
-    std::cout << "Path: ";
     std::list<int> F = Path(G, E, s - 1, f - 1);
-    for (auto& i : F)
-        std::cout << i << " ";
+    Output(E, F, s, f);
 
     return 0;
 }
@@ -234,7 +207,7 @@ std::vector<int> Dijkstra(AbstractGraph G, int s) {
         int v = -1, minWeight = inf;
 
         for (int j = 0; j < G.n; j++)
-            if (not visited[j] and D[j] < minWeight) {
+            if (not visited[j] and D[j] <= minWeight) {
                 v = j;
                 minWeight = D[j];
             }
