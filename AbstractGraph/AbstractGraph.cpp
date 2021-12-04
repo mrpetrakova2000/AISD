@@ -82,27 +82,25 @@ public:
     }
 
     void Output() {
-        std::cout << "\n  | ";
+        std::cout << "\n   | ";
         for (int i = 0; i < n; ++i) {
             std::cout.width(3);
             std::cout << i + 1 << " ";
         }
         std::cout << std::endl;
 
-        for (int i = 0; i < 4 * n + 3; ++i) std::cout << "-";
+        for (int i = 0; i < 4 * n + 4; ++i) std::cout << "-";
         std::cout << std::endl;
 
         for (int i = 0; i < n; ++i) {
+            std::cout.width(2);
             std::cout << i + 1 << " | ";
             for (int j = 0; j < n; ++j) {
-                if (MatrixAdj[i][j] == inf) {
-                    std::cout.width(3);
+                std::cout.width(3);
+                if (MatrixAdj[i][j] == inf) 
                     std::cout << "inf" << " ";
-                }
-                else {
-                    std::cout.width(3);
+                else 
                     std::cout << MatrixAdj[i][j] << " ";
-                }
             }
             std::cout << std::endl;
         }
@@ -125,11 +123,20 @@ void Output(std::vector<int> A, std::list<int> B, int s, int f) {
     std::cout << std::endl;
     for (auto& i : A) {
         std::cout.width(3);
-        std::cout << i << "|";
+        if (i == inf) 
+            std::cout << "inf|";
+        else
+            std::cout << i << "|";
     }
 
     std::cout << std::endl;
-    std::cout << "Shortest distance from start to final: " << A[f - 1] << std::endl;
+    std::cout << "Shortest distance from start to final: ";
+    if (A[f - 1] == inf) 
+        std::cout << "inf";
+    else 
+        std::cout << A[f - 1];
+    std::cout << std::endl;
+
     std::cout << "Path: ";
 
     for (auto& i : B)
@@ -138,10 +145,9 @@ void Output(std::vector<int> A, std::list<int> B, int s, int f) {
 }
 
 int main() {
-    AbstractGraph G;
-    //AbstractGraph G(50);
+    //AbstractGraph G;
+    AbstractGraph G(10);
 
-    //G.Output();
     G.Output();
 
     int s, f;
@@ -254,6 +260,7 @@ std::list<int> Path(AbstractGraph G, std::vector<int> A, int s, int f) {
     std::vector<bool> visited(G.n);
     int v = f;
     B.push_front(v + 1);
+    visited[v] = 1;
 
     while (v != s) {
         for (int u = 0; u < G.n; u++) {
