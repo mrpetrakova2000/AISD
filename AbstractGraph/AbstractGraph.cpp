@@ -12,14 +12,11 @@ private:
     std::vector<std::vector<int>> MatrixAdj;
 public:
 
-    AbstractGraph() {
-        Input();
-    }
+    AbstractGraph() { Input(); }
 
     AbstractGraph(int n) : n(n), m(rand() % (n* (n - 1) / 2)) {
         MatrixAdj.resize(n);
         for (int i = 0; i < n; i++) MatrixAdj[i].resize(n, inf);
-
         Generation(n, m);
     };
 
@@ -145,8 +142,9 @@ void Output(std::vector<int> A, std::list<int> B, int s, int f) {
 }
 
 int main() {
+    srand(time(0));
     //AbstractGraph G;
-    AbstractGraph G(10);
+    AbstractGraph G(15);
 
     G.Output();
 
@@ -172,36 +170,6 @@ int main() {
 
     return 0;
 }
-
-/*
-std::vector<int>Dijkstra(AbstractGraph G, int s) {
-
-    std::vector<int> distance(G.n);
-    int count, index, i, u, m = s + 1;
-    std::vector<bool> visited(G.n);
-    for (i = 0; i < G.n; i++)
-    {
-        distance[i] = INT_MAX; visited[i] = false;
-    }
-    distance[s] = 0;
-    for (count = 0; count < G.n - 1; count++)
-    {
-        int min = INT_MAX;
-        for (i = 0; i < G.n; i++)
-            if (!visited[i] && distance[i] <= min)
-            {
-                min = distance[i]; index = i;
-            }
-        u = index;
-        visited[u] = true;
-        for (i = 0; i < G.n; i++)
-            if (!visited[i] && G.MatrixAdj[u][i] && distance[u] != INT_MAX &&
-                distance[u] + G.MatrixAdj[u][i] < distance[i])
-                distance[i] = distance[u] + G.MatrixAdj[u][i];
-    }
-    return distance;
-}
-*/
 
 std::vector<int> Dijkstra(AbstractGraph G, int s) {
     std::vector<int> D(G.MatrixAdj[s]);
@@ -248,8 +216,9 @@ std::vector<int> FloydWarshall(AbstractGraph G, int s) {
 
     for (int k = 0; k < G.n; k++)
         for (int v = 0; v < G.n; v++)
-            for (int u = 0; u < G.n; u++)
-                D[v][u] = std::min(D[v][u], D[v][k] + D[k][u]);
+            if (D[v][k] != inf)
+                for (int u = v + 1; u < G.n; u++)
+                    D[u][v] = D[v][u] = std::min(D[v][u], D[v][k] + D[k][u]);
 
     return D[s];
 }
@@ -275,3 +244,33 @@ std::list<int> Path(AbstractGraph G, std::vector<int> A, int s, int f) {
 
     return B;
 }
+
+/*
+std::vector<int>Dijkstra_old(AbstractGraph G, int s) {
+
+    std::vector<int> distance(G.n);
+    int count, index, i, u, m = s + 1;
+    std::vector<bool> visited(G.n);
+    for (i = 0; i < G.n; i++)
+    {
+        distance[i] = INT_MAX; visited[i] = false;
+    }
+    distance[s] = 0;
+    for (count = 0; count < G.n - 1; count++)
+    {
+        int min = INT_MAX;
+        for (i = 0; i < G.n; i++)
+            if (!visited[i] && distance[i] <= min)
+            {
+                min = distance[i]; index = i;
+            }
+        u = index;
+        visited[u] = true;
+        for (i = 0; i < G.n; i++)
+            if (!visited[i] && G.MatrixAdj[u][i] && distance[u] != INT_MAX &&
+                distance[u] + G.MatrixAdj[u][i] < distance[i])
+                distance[i] = distance[u] + G.MatrixAdj[u][i];
+    }
+    return distance;
+}
+*/
