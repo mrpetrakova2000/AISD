@@ -20,6 +20,8 @@ public:
         Generation(n, m);
     };
 
+    ~AbstractGraph() {};
+
     void Input() {
         int choice;
         std::string fname;
