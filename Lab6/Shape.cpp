@@ -63,10 +63,18 @@ public:
     void flip_vertically();
 };
 
+class CannotBeCreated : public std::exception {
+public:
+    CannotBeCreated(const std::string& s) : std::exception(s.c_str()) {}
+};
+
 triangle::triangle(point a, point b)
     :rectangle(a, b),
     w(a.x > b.x ? a.x - b.x : b.x - a.x),
-    h(a.y > b.y ? a.y - b.y : b.y - a.y) {};
+    h(a.y > b.y ? a.y - b.y : b.y - a.y) {
+    if (!(on_screen(a.x, a.y) && on_screen(b.x, b.y)))
+        throw CannotBeCreated("Can't be created!");
+};
 
 void triangle::draw() {
     switch (state) {
@@ -253,26 +261,32 @@ int main() {
     */
 
     screen_init();
-    triangle tie(point(0, 0), point(18, 11));
-    std::cout << "Screen 1\n";
-   // tie.rotate_right();
-    shape_refresh();
-   /* try {
-        tie.move(50, 10);
+    try
+    {
+        triangle tie(point(-50, 0), point(18, 11));
+        std::cout << "Screen 1\n";
+        // tie.rotate_right();
+        shape_refresh();
+        /* try {
+             tie.move(50, 10);
+         }
+         catch (CantBeMoved &ex) {
+             std::cout << ex.what() << std::endl;
+         }*/
+        try {
+            tie.flip_vertically();
+        }
+        catch (CannotBeFlipped& ex) {
+            std::cout << ex.what() << std::endl;
+        }
+        std::cin.get();
+        std::cout << "Screen 2\n";
+        shape_refresh();
+        screen_destroy();
     }
-    catch (CantBeMoved &ex) {
+    catch (CannotBeCreated& ex)
+    {
         std::cout << ex.what() << std::endl;
-    }*/
-    try {
-        tie.flip_vertically();
     }
-    catch (CannotBeFlipped& ex) {
-        std::cout << ex.what() << std::endl;
-    }
-    std::cin.get();
-    std::cout << "Screen 2\n";
-    shape_refresh();
-    screen_destroy();
-
     return 0;
 }
