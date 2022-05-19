@@ -101,12 +101,11 @@ public:          //Стандартные элементы контейнера
 	}
 	Tree(int nMax) : tag('A'), root(nullptr), h(0), count(0) {
 		int* A = Generation(nMax);
-		int n;
-		for (n = 0; A[n] >= 0; n++);
-		for (int i = 0; i < n; i++) {
-			int k = i;
-			this->insert(k);
-		}
+		//int n;
+		//for (n = 0; A[n] >= 0; n++);
+		//for (int i = 0; i < n; i++) {
+		//	this->insert(A[i]);
+		//}
 	}
 	int size() { return count; }
 	~Tree() { delete root; }
@@ -153,11 +152,11 @@ bool Tree::find(int k) const {
 
 int* Tree::Generation(int nMax) {
 	int* A;
-	int n = rand() % nMax;
-	A = new int[n];
-	for (int i = 0; i < n; i++) {
-		A[i] = rand() % N;
-		this->insert(i);
+	//int n = rand() % nMax;
+	A = new int[nMax];
+	for (int i = 0; i < nMax; i++) {
+		A[i] = i;
+		this->insert(A[i]);
 	}
 	return A;
 }
