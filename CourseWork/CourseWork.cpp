@@ -8,8 +8,9 @@
 #include <fstream>
 #include <set>
 
-const int N = 1000;
+
 using namespace std;
+
 struct Node {
 	int key;	//Вес
 	Node* left;	//Левое и правое поддерево
@@ -72,7 +73,7 @@ class Tree {
 	Node* root;
 	int h, count; //Высота и мощность дерева
 	char** SCREEN;
-	//const int N = 16;
+	const int N = 16;
 	int offset = 40;
 public:          //Стандартные элементы контейнера
 	using key_type = int;
@@ -100,12 +101,7 @@ public:          //Стандартные элементы контейнера
 		for (int i = 0; i < n; i++) this->insert(A[i]);
 	}
 	Tree(int nMax) : tag('A'), root(nullptr), h(0), count(0) {
-		int* A = Generation(nMax);
-		//int n;
-		//for (n = 0; A[n] >= 0; n++);
-		//for (int i = 0; i < n; i++) {
-		//	this->insert(A[i]);
-		//}
+		Generation(nMax);
 	}
 	int size() { return count; }
 	~Tree() { delete root; }
@@ -132,8 +128,9 @@ public:          //Стандартные элементы контейнера
 	}
 	void newOutput();
 	void OutNode(Node* V, int row, int col, bool gr);
-	int* Generation(int nMax);
+	void Generation(int nMax);
 	bool find(int k) const;
+	Node* findT(int k) const;
 	friend class Container;
 };
 
@@ -150,15 +147,26 @@ bool Tree::find(int k) const {
 	return false;
 }
 
-int* Tree::Generation(int nMax) {
+Node* Tree::findT(int k) const {
+	Node* t = root;
+	while (t) {
+		if (k == t->key)
+			return t;
+		else if (k < t->key)
+			t = t->left;
+		else
+			t = t->right;
+	}
+	return nullptr;
+}
+
+void Tree::Generation(int nMax) {
 	int* A;
-	//int n = rand() % nMax;
 	A = new int[nMax];
 	for (int i = 0; i < nMax; i++) {
-		A[i] = i;
+		A[i] = rand() % (2*nMax-1);
 		this->insert(A[i]);
 	}
-	return A;
 }
 
 
@@ -197,8 +205,8 @@ pair<myiter, bool> Tree::insert(myiter where, int k)
 	}
 	Node* tr = nullptr;
 	while (cont) {//Поиск по дереву
-		if (k == t->key) {    // Выход «вставка не понадобилась»
-			return make_pair(myiter(t, move(St)), false);
+		if (Node* q = findT(k)) {    // Выход «вставка не понадобилась»
+			return make_pair(myiter(q, move(St)), false);
 		}
 		if (k < t->key) {
 			if (t->left) { //Идём влево
@@ -214,7 +222,6 @@ pair<myiter, bool> Tree::insert(myiter where, int k)
 				Node* t1 = new Node(k, nullptr, t);
 				cont = false;
 				up = true;
-				++h;
 				t = t1;
 			}
 		}
@@ -223,6 +230,7 @@ pair<myiter, bool> Tree::insert(myiter where, int k)
 			t->next = true;     //*************************************
 			cont = false;
 			tr = t->right;
+			return make_pair(myiter(tr, move(St)), true);
 		}
 		else if (t->next) { //Группа из двух
 			if (k < t->right->key) { //Меньше правого
@@ -234,19 +242,20 @@ pair<myiter, bool> Tree::insert(myiter where, int k)
 					t->right->left = new Node(k);
 					cont = false;
 					tr = t->right->left;
+					return make_pair(myiter(tr, move(St)), true);
 				}
 			}
 			else {
 				if (t->right->right) { //Есть путь вниз
 					St.push(make_pair(t, 4)); // — случай 4
 					t = t->right->right;
+					++h;
 				}
 				else { //Вставка третьего
 					t->right->right = new Node(k);
 					up = t->right->next = true; //true, стало три //*********
 					cont = false;
 					tr = t->right->right;
-					++h;
 				}
 			}
 		}
@@ -259,6 +268,8 @@ pair<myiter, bool> Tree::insert(myiter where, int k)
 			t->next = true;
 			up = false;
 			cont = false;
+			tr = t->right;
+			return make_pair(myiter(tr, move(St)), true);
 		}
 		while (up) {	//Группа из трёх: передача второго на уровень вверх
 			Node* t1{ t->right };
@@ -269,8 +280,7 @@ pair<myiter, bool> Tree::insert(myiter where, int k)
 			t1->right = t2;
 
 			if (St.top().second == 1) root = t1;
-			else if (St.top().second == 4) root->right->right = t1;
-			else if (St.top().second == 3) St.top().first->right = t1;
+			else if (St.top().second == 4) St.top().first->right->right = t1;
 
 			if (k == t1->key) tr = t1;
 			else if (k == t->key) tr = t;
@@ -297,10 +307,13 @@ pair<myiter, bool> Tree::insert(myiter where, int k)
 					t1->right = t->right;
 					t->right = t1;
 					t1->next = true;
+					++h;
 				}
 				else {	//Вставка второго справа, конец
+					St.top().first->right = t1;
 					t->next = true;
 					up = t1->next = false;
+					//++h;
 					St.pop();
 				}
 				break;
@@ -392,6 +405,8 @@ public:
 		for (auto x = set.begin(); x != set.end(); ++x)
 			sequence.push_back(x);
 	};
+
+	int Power() { return sequence.size(); }
 
 	Container operator & (const Container& a) {
 		Container r;
@@ -489,38 +504,47 @@ void Container::Subst(const Container& a, int p)
 
 int main()
 {
+	int middle_power = 0, set_count = 0;
+	auto Used = [&](Container& t) { 
+		middle_power += t.Power();
+		++set_count; 
+	};
 	srand(time(nullptr));
 	std::fstream out;
 	out.open("C:\\Users\\admin\\Desktop\\in.txt");
-	for (int k = 4; k < 206; k=k+2) {
-		//clock_t t = clock();
+	for (int k = 4; k < 200; k = k + 2) {
+		middle_power = 0; set_count = 0;
 		auto t1 = std::chrono::high_resolution_clock::now();
-		Container C1(Tree(k+1));
-		Container C2(Tree(k+1));
+		Container C1(Tree(k + 1)); Used(C1);
+		Container C2(Tree(k + 1));
+		Container C3(Tree(k + 1));
+		Container C4(Tree(k + 1));
 
 		C2.Subst(C1, 0);
-		//C1.Output();
-		//C2.Output();
-		C2.Excl(C1);
-		C2.Mul(3);
+		Used(C2);
 
-		Container A(Tree(k + 1));
-		Container B(Tree(k + 1));
-		Container C(Tree(k + 1));
-		Container D(Tree(k + 1));
-		Container E(Tree(k + 1));
+		C3.Excl(C1); 
+		Used(C3); 
 
-		Container R = (A & B) ^ (C & D & E);
+		C4.Mul(3); 
+		Used(C4);
+
+		Container A(Tree(k + 1)); Used(A);
+		Container B(Tree(k + 1)); Used(B);
+		Container C(Tree(k + 1)); Used(C);
+		Container D(Tree(k + 1)); Used(D);
+		Container E(Tree(k + 1)); Used(E);
+		Container R = (A & B) ^ (C & D & E); Used(R);
 		auto t2 = std::chrono::high_resolution_clock::now();
 		auto dt = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
-
-		//cout << "DT = " << (dt.count()) << endl;
-		
-		if (out.is_open()) {
-			out << k + 1 << " " << dt.count() << std::endl;
+		middle_power /= set_count;
+		if (R.Power() > 0 && C3.Power() > 0) {
+			if (out.is_open()) {
+				out << middle_power << " " << dt.count() << std::endl;
+			}
 		}
-		else cout << "AAA";
+		else k -= 2;
 	}
-	
+	std::cout << "Data is saved!" << endl;
 	return 0;
 }
